@@ -32,4 +32,30 @@ userSchema.pre("save", function (next) {
   });
 });
 
+// Method to compare given password with the hashed password stored in the database
+userSchema.methods.comparePassword = async function (password) {
+  try {
+    const isMatch = await bcrypt.compare(password, this.password);
+    return isMatch;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const authenticateUser = async (email, password) => {
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return { results: false, message: "User not found" };
+    }
+
+    const isMatch = await user.comparePassword(password);
+    return isMatch
+      ? user
+      : { results: false, message: "Password is incorrect" };
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const UserModel = model("users", userSchema);

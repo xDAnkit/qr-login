@@ -1,4 +1,5 @@
-import { UserModel } from "./users.model.js";
+import { prepareResponse } from "../../../utils/response-handler.js";
+import { UserModel, authenticateUser } from "./users.model.js";
 
 export const signupUser = async (req, res) => {
   try {
@@ -29,4 +30,26 @@ export const signupUser = async (req, res) => {
   }
 };
 
-export const signinUser = async (req, res) => {};
+/**
+ * @description {Method to sign in user}
+ * @param {*} req
+ * @param {*} res
+ *
+ * Step 1   - Obtain id & password
+ * Step 2   - Write a query to validate user & password
+ * Step 2.1 - If not found then return error
+ * Step 3   - Get user id & issue JWT token & refresh token
+ * Step 4   - Store session details in Redis
+ * Step 5   - Return user token details as a response
+ */
+export const signinUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  const userResponse = await authenticateUser(email, password);
+  if (!userResponse.results) {
+    const results = prepareResponse(null, userResponse.message);
+    return res.send(results);
+  }
+
+  // Issue token
+};
