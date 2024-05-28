@@ -51,5 +51,7 @@ export const signinUser = async (req, res) => {
     return res.send(results);
   }
 
+  return res.send(userResponse);
+
   // Issue token
 };
