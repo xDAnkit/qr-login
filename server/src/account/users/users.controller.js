@@ -1,3 +1,4 @@
+import { generateToken } from "../../../services/jwt/jwt.service.js";
 import { prepareResponse } from "../../../utils/response-handler.js";
 import { UserModel, authenticateUser } from "./users.model.js";
 
@@ -51,7 +52,9 @@ export const signinUser = async (req, res) => {
     return res.send(results);
   }
 
-  return res.send(userResponse);
-
-  // Issue token
+  console.log("User: ", userResponse);
+  const userTokenDetails = generateToken({
+    userId: userResponse.results.userId,
+  });
+  return res.send(userTokenDetails);
 };
