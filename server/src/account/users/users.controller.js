@@ -5,7 +5,7 @@ import { UserModel, authenticateUser } from "./users.model.js";
 export const signupUser = async (req, res) => {
   try {
     // Check if the following email is already in use
-    const hasEmailExists = await UserModel.find({ email: req.body.email });
+    const hasEmailExists = await UserModel.findOne({ email: req.body.email });
     if (hasEmailExists) {
       // Return email is already in use
       return res.send({
@@ -53,7 +53,7 @@ export const signinUser = async (req, res) => {
   }
 
   console.log("User: ", userResponse);
-  const userTokenDetails = generateToken({
+  const userTokenDetails = await generateToken({
     userId: userResponse.results.userId,
   });
   return res.send(userTokenDetails);
