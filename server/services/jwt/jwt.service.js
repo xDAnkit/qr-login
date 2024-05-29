@@ -27,13 +27,7 @@ export const generateToken = async (payload) => {
     const userTokenData = await userTokenModel.findOne({
       userId: payload.userId,
     });
-
-    if (userTokenData) {
-      // Append the new tokens to the existing arrays
-      userTokenData.accessTokens.push(accessToken);
-      userTokenData.refreshTokens.push(refreshToken);
-      await userTokenData.save();
-    } else {
+    if (!userTokenData) {
       // Create a new record if user token data doesn't exist
       const newUserTokenData = new userTokenModel({
         userId: payload.userId,
@@ -41,7 +35,12 @@ export const generateToken = async (payload) => {
         refreshTokens: [refreshToken],
       });
       await newUserTokenData.save();
+      return { accessToken, refreshToken };
     }
+
+    userTokenData.accessTokens.push(accessToken);
+    userTokenData.refreshTokens.push(refreshToken);
+    await userTokenData.save();
 
     return { accessToken, refreshToken };
   } catch (error) {
@@ -87,12 +86,12 @@ export const regenerateToken = async (refreshToken) => {
       userId: decoded.userId,
     });
 
-    if (userData && userData?.refreshTokens.includes(refreshToken)) {
-      const newAccessToken = jwt.sign(decoded, JWT_PWD, { expiresIn: "1h" });
-      return { newAccessToken };
-    } else {
+    if (!userData || !userData?.refreshTokens.includes(refreshToken)) {
       throw new Error("Invalid token is provided");
     }
+
+    const newAccessToken = jwt.sign(decoded, JWT_PWD, { expiresIn: "1h" });
+    return { newAccessToken };
   } catch (error) {
     return { error: error.message };
   }
@@ -106,7 +105,7 @@ export const regenerateToken = async (refreshToken) => {
  */
 export const destroyToken = async (token, type) => {
   try {
-    if (type !== "refreshTokens" && type !== "accessTokens") {
+    if (!["refreshTokens", "accessTokens"].includes(type)) {
       throw new Error("Please provide a valid token type.");
     }
 
