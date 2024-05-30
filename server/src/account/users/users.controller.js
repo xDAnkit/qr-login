@@ -58,3 +58,8 @@ export const signinUser = async (req, res) => {
   });
   return res.send(userTokenDetails);
 };
+
+export const getProfile = async (req, res) => {
+  const response = prepareResponse(req.user, "User details found");
+  res.send(response);
+};

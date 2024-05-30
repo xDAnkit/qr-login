@@ -56,14 +56,19 @@ export const generateToken = async (payload) => {
  * @returns {Object} Decoded payload if the token is valid, otherwise an error message
  */
 export const validateToken = (token) => {
+  //console.log({ token });
   try {
     if (!JWT_PWD) {
+      //console.log({ JWT_PWD });
+
       throw new Error("Missing required environment variable: JWT_PWD.");
     }
 
     const decoded = jwt.verify(token, JWT_PWD);
+    //console.log({ decoded });
+
     if (decoded) {
-      return { valid: true, decoded };
+      return { valid: true, userInfo: decoded };
     }
   } catch (error) {
     console.log("Error validating token:", error);
