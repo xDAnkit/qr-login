@@ -1,5 +1,6 @@
 import React from "react";
 import QRcode from "../Components/QRcode";
+import { mongo } from "mongoose";
 
 const LoginPage = () => {
   return (
