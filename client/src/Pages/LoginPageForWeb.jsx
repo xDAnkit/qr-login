@@ -1,10 +1,9 @@
 import React from "react";
 import QRcode from "../Components/QRcode";
-import { mongo } from "mongoose";
 
-const LoginPage = () => {
+const LoginPageForWeb = () => {
   return (
-    <section className="w-full h-screen bg-gray-200 flex justify-center items-center">
+    <section className="w-full h-screen bg-gray-200 hidden justify-center items-center sm:flex">
       <section className="flex justify-center gap-7 h-[250px] items-center">
         <div className="text-[40px] font-extrabold">
           Scan the QR code to login .
@@ -16,4 +15,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default LoginPageForWeb;
